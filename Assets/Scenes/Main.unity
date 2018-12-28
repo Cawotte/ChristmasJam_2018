@@ -339,8 +339,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data:
-    Speed: 2
+    BaseSpeed: 2
+    SlowSpeed: 0.5
+    FastSpeed: 4
     JumpHeight: 5
+  isJumping: 0
+  isStopping: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,6 +356,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -367,6 +372,19 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
+--- !u!114 &519420030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 416861aa68c22a348906984d326d00d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 246459681}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -438,7 +456,7 @@ PrefabInstance:
     - target: {fileID: 7049966972380199929, guid: 93abfe3e725bf534a946d7cb5e314362,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.922577
+      value: 33.162
       objectReference: {fileID: 0}
     - target: {fileID: 7049966972380199929, guid: 93abfe3e725bf534a946d7cb5e314362,
         type: 3}
@@ -493,7 +511,7 @@ PrefabInstance:
     - target: {fileID: 7049966972380199929, guid: 93abfe3e725bf534a946d7cb5e314362,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: -3.1443326
+      value: -55.624264
       objectReference: {fileID: 0}
     - target: {fileID: 7049966972380199929, guid: 93abfe3e725bf534a946d7cb5e314362,
         type: 3}
