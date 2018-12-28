@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     private AxisInput verticalInput;
     private AxisInput horizontalInput;
 
+    private float lastKnownSpeed;
     
     [Serializable]
     private struct Data
@@ -42,7 +43,7 @@ public class Player : MonoBehaviour
     {
 
         //On vertical button release
-        if (verticalInput.IsReleased)
+        if (!verticalInput.IsPressed())
         {
             //If he was stopping, resume course.
             if (isStopping)
@@ -54,7 +55,7 @@ public class Player : MonoBehaviour
             }
         }
         //On horizontal button release
-        if (horizontalInput.IsReleased)
+        if (!horizontalInput.IsPressed())
         {
             //If he's not stopping.
             if (!isStopping)
@@ -65,7 +66,7 @@ public class Player : MonoBehaviour
         }
 
         //Jump
-        if ( verticalInput.IsPressedDown )
+        if ( verticalInput.IsPressedDown)
         {
             if (verticalInput.InputValue > 0f)
             {
@@ -79,7 +80,7 @@ public class Player : MonoBehaviour
         }
 
         //Speed
-        if (horizontalInput.IsPressedDown)
+        if (horizontalInput.IsPressed())
         {
             //Fast speed
             if (horizontalInput.InputValue > 0f)
@@ -94,7 +95,14 @@ public class Player : MonoBehaviour
                 SetVelocity(data.SlowSpeed);
             }
         }
-        
+
+
+        //When not moving, try moving.
+        if (rb.velocity.x == 0f && !isStopping)
+        {
+            SetVelocity(lastKnownSpeed);
+        }
+
     }
 
     private void Jump()
@@ -109,67 +117,14 @@ public class Player : MonoBehaviour
         Vector3 velocity = rb.velocity;
         velocity.x = direction * speed;
         rb.velocity = velocity;
+        lastKnownSpeed = speed;
     }
-
-    private void MoveToward(float xAxis)
-    {
-        if (xAxis == 0f) return;
-
-        int direction = (xAxis > 0) ? 1 : -1;
-
-        Vector3 velocity = rb.velocity;
-        velocity.x = direction * data.BaseSpeed;
-        rb.velocity = velocity;
-    }
-
+    
     private void StopHorizontalMovement()
     {
         Vector3 velocity = rb.velocity;
         velocity.x = 0f;
         rb.velocity = velocity;
     }
-
-
-    private class Axis
-    {
-        public string Name;
-        public bool IsPressed = false;
-        
-        public Axis (string name)
-        {
-            Name = name;
-        }
-
-        public bool AxisPressedDown()
-        {
-            if (IsPressed)
-            {
-                return false;
-            }
-            else
-            {
-                if (Input.GetAxis(Name) != 0f)
-                {
-                    IsPressed = true;
-                    return true;
-                }
-                return false;
-            }
-        }
-        
-        public float GetInput()
-        {
-            return Input.GetAxis(Name);
-        }
-
-        public bool AxisPressedUp()
-        {
-            if (IsPressed && Input.GetAxis(Name) == 0f )
-            {
-                IsPressed = false;
-                return true;
-            }
-            return false;
-        }
-    }
+    
 }
