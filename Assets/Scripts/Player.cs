@@ -6,14 +6,17 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 
+    [SerializeField] private InputManager inputManager;
     [SerializeField] private Data data;
 
 
     [SerializeField] private bool isJumping = false;
     [SerializeField] private bool isStopping = false;
     private Rigidbody2D rb;
-    private Axis verticalInput;
-    private Axis horizontalInput;
+
+    //Inputs
+    private AxisInput verticalInput;
+    private AxisInput horizontalInput;
 
     
     [Serializable]
@@ -28,8 +31,8 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        verticalInput = new Axis("Vertical");
-        horizontalInput = new Axis("Horizontal");
+        verticalInput = inputManager.Get("Vertical");
+        horizontalInput = inputManager.Get("Horizontal");
 
         SetVelocity(data.BaseSpeed);
     }
@@ -39,7 +42,7 @@ public class Player : MonoBehaviour
     {
 
         //On vertical button release
-        if (verticalInput.AxisPressedUp())
+        if (verticalInput.IsReleased)
         {
             //If he was stopping, resume course.
             if (isStopping)
@@ -51,7 +54,7 @@ public class Player : MonoBehaviour
             }
         }
         //On horizontal button release
-        if (horizontalInput.AxisPressedUp())
+        if (horizontalInput.IsReleased)
         {
             //If he's not stopping.
             if (!isStopping)
@@ -62,9 +65,9 @@ public class Player : MonoBehaviour
         }
 
         //Jump
-        if ( verticalInput.AxisPressedDown() )
+        if ( verticalInput.IsPressedDown )
         {
-            if (verticalInput.GetInput() > 0f)
+            if (verticalInput.InputValue > 0f)
             {
                 Jump();
             }
@@ -76,10 +79,10 @@ public class Player : MonoBehaviour
         }
 
         //Speed
-        if (horizontalInput.AxisPressedDown())
+        if (horizontalInput.IsPressedDown)
         {
             //Fast speed
-            if (horizontalInput.GetInput() > 0f)
+            if (horizontalInput.InputValue > 0f)
             {
                 Debug.Log("Set Fast Speed!");
                 SetVelocity(data.FastSpeed);
