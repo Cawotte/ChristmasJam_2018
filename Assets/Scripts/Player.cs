@@ -205,6 +205,7 @@ public class Player : MonoBehaviour
         {
             if (form == Form.Bat)
             {
+                OnEndBat();
                 Stun(data.LongStunDuration);
             }
             else
