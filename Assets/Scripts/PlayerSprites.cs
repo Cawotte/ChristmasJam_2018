@@ -4,18 +4,21 @@ using UnityEngine;
 
 public class PlayerSprites : MonoBehaviour
 {
-    [SerializeField] private Sprite vampireSprite;
-    [SerializeField] private Sprite wolfSprite;
-    [SerializeField] private Sprite batSprite;
-    [SerializeField] private Sprite fogSprite;
+    //[SerializeField] private Sprite vampireSprite;
+    //[SerializeField] private Sprite wolfSprite;
+    //[SerializeField] private Sprite batSprite;
+    //[SerializeField] private Sprite fogSprite;
 
+    private Animator animator;
     private Player player;
     private Player.Form lastKnownForm = Player.Form.Vampire;
 
     private void Awake()
     {
         player = GetComponent<Player>();
+        animator = GetComponent<Animator>();
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,16 +40,20 @@ public class PlayerSprites : MonoBehaviour
         switch (form)
         {
             case (Player.Form.Vampire):
-                SetSprite(vampireSprite);
+                animator.Play("Walking");
+                //SetSprite(vampireSprite);
                 break;
             case (Player.Form.Bat):
-                SetSprite(batSprite);
+                animator.Play("Flying");
+                //SetSprite(batSprite);
                 break;
             case (Player.Form.Wolf):
-                SetSprite(wolfSprite);
+                animator.Play("Jump");
+                //SetSprite(wolfSprite);
                 break;
             case (Player.Form.Fog):
-                SetSprite(fogSprite);
+                animator.Play("Fog");
+                //SetSprite(fogSprite);
                 break;
         }
     }

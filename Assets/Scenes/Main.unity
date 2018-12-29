@@ -362,6 +362,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 755eb2115c1a6734baa97f597dcaa1da, type: 3}
+--- !u!1 &227907414 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6517143229047546476, guid: 4f8d0d6ad96b4d24686f5d24447d1e98,
+    type: 3}
+  m_PrefabInstance: {fileID: 916296641}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &227907415 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6517143229047546448, guid: 4f8d0d6ad96b4d24686f5d24447d1e98,
@@ -374,12 +380,31 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 916296641}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 227907414}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4c65bc3ced5720429598a5c042f429f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &227907421
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227907414}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5867baf9f326f124ea2e869f35d38b25, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &392076755
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1034,7 +1059,7 @@ PrefabInstance:
     - target: {fileID: 6517143229047546476, guid: 4f8d0d6ad96b4d24686f5d24447d1e98,
         type: 3}
       propertyPath: m_Name
-      value: Player (1)
+      value: Player Vampire
       objectReference: {fileID: 0}
     - target: {fileID: 6517143229047546448, guid: 4f8d0d6ad96b4d24686f5d24447d1e98,
         type: 3}
@@ -1044,7 +1069,7 @@ PrefabInstance:
     - target: {fileID: 6517143229047546448, guid: 4f8d0d6ad96b4d24686f5d24447d1e98,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 6517143229047546448, guid: 4f8d0d6ad96b4d24686f5d24447d1e98,
         type: 3}
