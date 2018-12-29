@@ -10,8 +10,9 @@ public class Player : MonoBehaviour
     [SerializeField] private Data data;
 
 
-    [SerializeField] private bool isJumping = false;
-    [SerializeField] private bool isStopping = false;
+    //[SerializeField] private bool isJumping = false;
+    //[SerializeField] private bool isStopping = false;
+    [SerializeField] private State state = State.Walking;
     private Rigidbody2D rb;
 
     //Inputs
@@ -19,16 +20,38 @@ public class Player : MonoBehaviour
     private AxisInput horizontalInput;
 
     private float lastKnownSpeed;
-    
+
+    #region struct
     [Serializable]
     private struct Data
     {
-        public float BaseSpeed;
-        public float SlowSpeed;
-        public float FastSpeed;
         public float JumpHeight;
+        public float BaseSpeed;
+        public float VerySlowMultiplier;
+        public float SlowMultiplier;
+        public float FastMultiplier;
+        public float VeryFastMultiplier;
+        
+        public float VerySlowSpeed
+        {
+            get { return BaseSpeed * VerySlowMultiplier; }
+        }
+        public float SlowSpeed
+        {
+            get { return BaseSpeed * SlowMultiplier; }
+        }
+        public float FastSpeed
+        {
+            get { return BaseSpeed * FastMultiplier; }
+        }
+        public float VeryFastSpeed
+        {
+            get { return BaseSpeed * VeryFastMultiplier; }
+        }
     }
-    
+    #endregion
+
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -41,73 +64,104 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
-        //On vertical button release
-        if (!verticalInput.IsPressed())
+        //Resume velocity to speed if moving and blocked by obstacle.
+        if ( CanMoveHorizontaly() && rb.velocity.x == 0f)
         {
-            //If he was stopping, resume course.
-            if (isStopping)
-            {
-                isStopping = false;
-
-                Debug.Log("Set Base Speed! (Stopping)");
-                SetVelocity(data.BaseSpeed);
-            }
+            SetVelocity(lastKnownSpeed);
         }
-        //On horizontal button release
-        if (!horizontalInput.IsPressed())
+        switch (state)
         {
-            //If he's not stopping.
-            if (!isStopping)
-            {
-                Debug.Log("Set Base Speed!");
-                SetVelocity(data.BaseSpeed);
-            }
+            case (State.Stun):
+                //Can't do anything
+                break;
+            case (State.Walking):
+                //Can Jump, and regulate speed depending on inputs.
+                if (verticalInput.IsPressed())
+                {
+                    if (verticalInput.InputValue > 0f)
+                    {
+                        Jump();
+                    }
+                    else
+                    {
+                        StopHorizontalMovement();
+                        state = State.Stopping;
+                    }
+                }
+                ManipulateHorizontalSpeed();
+                break;
+            case (State.Jumping):
+                //Can only regulate speed
+                ManipulateHorizontalSpeed();
+
+                //Check if ground is touched
+                if ( rb.velocity.y == 0f)
+                {
+                    state = State.Walking;
+                }
+                break;
+            case (State.Stopping):
+                //Don't move horizontaly, until key is released.
+                if (!verticalInput.IsPressed())
+                {
+                    SetVelocity(data.BaseSpeed);
+                    state = State.Walking;
+                }
+                break;
         }
 
-        //Jump
-        if ( verticalInput.IsPressedDown)
+    }
+
+    #region trigger
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag.Equals("Obstacle"))
         {
-            if (verticalInput.InputValue > 0f)
-            {
-                Jump();
-            }
-            else
-            {
-                StopHorizontalMovement();
-                isStopping = true;
-            }
+            //Debug.Log("obstacle touched!");
+            Stun(2f);
+            Destroy(collision.gameObject);
         }
+    }
+    #endregion
 
+
+    private void ManipulateHorizontalSpeed()
+    {
         //Speed
-        if (horizontalInput.IsPressed())
+        if (horizontalInput.IsPressedDown)
         {
             //Fast speed
             if (horizontalInput.InputValue > 0f)
             {
-                Debug.Log("Set Fast Speed!");
+                //Debug.Log("Set Fast Speed!");
                 SetVelocity(data.FastSpeed);
             }
             else
             {
                 //Slow speed
-                Debug.Log("Set Slow Speed!");
+                //Debug.Log("Set Slow Speed!");
                 SetVelocity(data.SlowSpeed);
             }
         }
-
-
-        //When not moving, try moving.
-        if (rb.velocity.x == 0f && !isStopping)
+        else if (horizontalInput.IsReleased)
         {
-            SetVelocity(lastKnownSpeed);
+            SetVelocity(data.BaseSpeed);
         }
-
     }
-
     private void Jump()
     {
         rb.AddForce(Vector3.up * data.JumpHeight, ForceMode2D.Impulse);
+        state = State.Jumping;
+    }
+
+    private void Stun(float duration)
+    {
+        StartCoroutine(StunFor(duration));
+    }
+
+    private bool CanMoveHorizontaly()
+    {
+        return state == State.Walking || state == State.Jumping;
     }
 
     private void SetVelocity(float speed, bool towardRight = true)
@@ -125,6 +179,26 @@ public class Player : MonoBehaviour
         Vector3 velocity = rb.velocity;
         velocity.x = 0f;
         rb.velocity = velocity;
+    }
+
+    private IEnumerator StunFor(float duration)
+    {
+        float t = 0f;
+        state = State.Stun;
+        StopHorizontalMovement();
+
+        while (t < duration)
+        {
+            yield return null;
+            t += Time.deltaTime;
+        }
+
+        state = State.Walking;
+        SetVelocity(data.BaseSpeed);
+    }
+    public enum State
+    {
+        Stun, Walking, Jumping, Stopping
     }
     
 }
