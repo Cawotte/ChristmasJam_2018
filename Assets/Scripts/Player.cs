@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
 
     //[SerializeField] private bool isJumping = false;
     //[SerializeField] private bool isStopping = false;
+    [SerializeField] private Form form = Form.Vampire;
     [SerializeField] private State state = State.Walking;
     private Rigidbody2D rb;
 
@@ -20,6 +21,8 @@ public class Player : MonoBehaviour
     private AxisInput horizontalInput;
 
     private float lastKnownSpeed;
+
+    public Form CurrentForm { get => form; }
 
     #region struct
     [Serializable]
@@ -81,6 +84,7 @@ public class Player : MonoBehaviour
                     if (verticalInput.InputValue > 0f)
                     {
                         Jump();
+                        //form = Form.Wolf;
                     }
                     else
                     {
@@ -98,6 +102,7 @@ public class Player : MonoBehaviour
                 if ( rb.velocity.y == 0f)
                 {
                     state = State.Walking;
+                    //form = Form.Vampire;
                 }
                 break;
             case (State.Stopping):
@@ -106,6 +111,22 @@ public class Player : MonoBehaviour
                 {
                     SetVelocity(data.BaseSpeed);
                     state = State.Walking;
+                }
+                break;
+        }
+
+        switch (form)
+        {
+            case (Form.Vampire):
+                if (rb.velocity.y > 0f)
+                {
+                    form = Form.Wolf;
+                }
+                break;
+            case (Form.Wolf):
+                if (rb.velocity.y == 0f)
+                {
+                    form = Form.Vampire;
                 }
                 break;
         }
@@ -150,7 +171,11 @@ public class Player : MonoBehaviour
     }
     private void Jump()
     {
-        rb.AddForce(Vector3.up * data.JumpHeight, ForceMode2D.Impulse);
+        Vector3 velocity = rb.velocity;
+        velocity.y += Mathf.Sqrt(-2.0f * (Physics2D.gravity.y * rb.gravityScale) * data.JumpHeight);
+        rb.velocity = velocity;
+        
+        //rb.AddForce(Vector3.up * data.JumpHeight, ForceMode2D.Impulse);
         state = State.Jumping;
     }
 
@@ -167,6 +192,8 @@ public class Player : MonoBehaviour
     private void SetVelocity(float speed, bool towardRight = true)
     {
         int direction = (towardRight) ? 1 : -1;
+
+        if (rb.velocity.x == direction * speed) return;
 
         Vector3 velocity = rb.velocity;
         velocity.x = direction * speed;
@@ -185,6 +212,7 @@ public class Player : MonoBehaviour
     {
         float t = 0f;
         state = State.Stun;
+        form = Form.Vampire;
         StopHorizontalMovement();
 
         while (t < duration)
@@ -195,6 +223,11 @@ public class Player : MonoBehaviour
 
         state = State.Walking;
         SetVelocity(data.BaseSpeed);
+    }
+
+    public enum Form
+    {
+        Vampire, Wolf, Bat, Fog
     }
     public enum State
     {
