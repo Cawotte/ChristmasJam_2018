@@ -169,6 +169,11 @@ public class Player : MonoBehaviour
         switch (state)
         {
             case (State.Stun):
+                if (form != Form.Stun)
+                {
+                    form = Form.Stun;
+                }
+                break;
             case (State.Walking):
             case (State.Stopping):
                 if (form != Form.Vampire)
@@ -363,10 +368,11 @@ public class Player : MonoBehaviour
 
     private IEnumerator StunFor(float duration)
     {
+        if (state == State.Stun) yield break;
         float t = 0f;
-        state = State.Stun;
-        form = Form.Vampire;
         StopHorizontalMovement();
+        state = State.Stun;
+        form = Form.Stun;
 
         while (t < duration)
         {
@@ -374,13 +380,12 @@ public class Player : MonoBehaviour
             t += Time.deltaTime;
         }
 
-        state = State.Walking;
-        SetVelocity(data.BaseSpeed);
+        StartWalking();
     }
 
     public enum Form
     {
-        Vampire, Wolf, Bat, Fog
+        Vampire, Wolf, Bat, Fog, Stun
     }
     public enum State
     {

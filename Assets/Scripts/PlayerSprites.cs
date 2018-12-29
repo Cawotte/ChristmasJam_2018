@@ -55,6 +55,9 @@ public class PlayerSprites : MonoBehaviour
                 animator.Play("Fog");
                 //SetSprite(fogSprite);
                 break;
+            case (Player.Form.Stun):
+                animator.Play("Stun");
+                break;
         }
     }
 
