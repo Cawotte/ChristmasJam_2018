@@ -1,0 +1,153 @@
+fileFormatVersion: 2
+guid: 755eb2115c1a6734baa97f597dcaa1da
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2100000: Material__int_rieur_2_png
+    2100002: Material__int_rieur_3_png
+    2100004: Material__int_rieur_png
+    2100006: Material__roche_png
+    2100008: Material__int_rieur_1_png
+    2100010: Material__drapeaux_png
+    2100012: Material__Bois_png
+    2100014: Material__cha_nes_png_001
+    2100016: Material__cha_nes_png
+    2100018: Material__cha_nes_png_003
+    2100020: Material__cha_nes_png_002
+    2100022: Material__cha_nes_png_007
+    2100024: Material__cha_nes_png_006
+    2100026: Material__cha_nes_png_005
+    2100028: Material__cha_nes_png_004
+    2100030: Material__cha_nes_png_015
+    2100032: Material__cha_nes_png_014
+    2100034: Material__cha_nes_png_013
+    2100036: Material__cha_nes_png_012
+    2100038: Material__cha_nes_png_011
+    2100040: Material__cha_nes_png_010
+    2100042: Material__cha_nes_png_009
+    2100044: Material__cha_nes_png_008
+    2100046: Material__cha_nes_png_023
+    2100048: Material__cha_nes_png_022
+    2100050: Material__cha_nes_png_021
+    2100052: Material__cha_nes_png_020
+    2100054: Material__cha_nes_png_019
+    2100056: Material__cha_nes_png_018
+    2100058: Material__cha_nes_png_017
+    2100060: Material__cha_nes_png_016
+    2100062: Material__cha_nes_png_031
+    2100064: Material__cha_nes_png_030
+    2100066: Material__cha_nes_png_057
+    2100068: Material__cha_nes_png_056
+    2100070: Material__cha_nes_png_055
+    2100072: Material__cha_nes_png_054
+    2100074: Material__cha_nes_png_053
+    2100076: Material__cha_nes_png_052
+    2100078: Material__cha_nes_png_051
+    2100080: Material__cha_nes_png_050
+    2100082: Material__cha_nes_png_049
+    2100084: Material__cha_nes_png_048
+    2100086: Material__cha_nes_png_047
+    2100088: Material__cha_nes_png_046
+    2100090: Material__cha_nes_png_045
+    2100092: Material__cha_nes_png_044
+    2100094: Material__cha_nes_png_043
+    2100096: Material__cha_nes_png_042
+    2100098: Material__cha_nes_png_041
+    2100100: Material__cha_nes_png_040
+    2100102: Material__cha_nes_png_039
+    2100104: Material__cha_nes_png_038
+    2100106: Material__cha_nes_png_037
+    2100108: Material__cha_nes_png_036
+    2100110: Material__cha_nes_png_035
+    2100112: Material__cha_nes_png_034
+    2100114: Material__cha_nes_png_033
+    2100116: Material__cha_nes_png_032
+    2100118: Material__drapeaux_png_001
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Cube_001
+    7400000: Default Take
+    9500000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
