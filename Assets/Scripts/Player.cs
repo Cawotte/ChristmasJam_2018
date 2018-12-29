@@ -8,29 +8,19 @@ public class Player : MonoBehaviour
 
     [SerializeField] private InputManager inputManager;
     [SerializeField] private Data data;
-    [SerializeField] private float minimalTimeInFog = 1f;
 
 
     //[SerializeField] private bool isJumping = false;
     //[SerializeField] private bool isStopping = false;
     [SerializeField] private Form form = Form.Vampire;
     [SerializeField] private State state = State.Walking;
-
     private Rigidbody2D rb;
-    private Collider2D collider;
 
     //Inputs
     private AxisInput verticalInput;
     private AxisInput horizontalInput;
-    private AxisInput fogInput;
-    private AxisInput batInput;
 
-    //timer
-    private float timeSpentInFog = 0f;
-
-    //remember values
     private float lastKnownSpeed;
-    private float gravityScale;
 
     public Form CurrentForm { get => form; }
 
@@ -68,18 +58,10 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        collider = GetComponent<Collider2D>();
-
-        SetVelocity(data.BaseSpeed);
-        gravityScale = rb.gravityScale;
-    }
-
-    private void Start()
-    {
         verticalInput = inputManager.Get("Vertical");
         horizontalInput = inputManager.Get("Horizontal");
-        batInput = inputManager.Get("Action1");
-        fogInput = inputManager.Get("Action2");
+
+        SetVelocity(data.BaseSpeed);
     }
 
     // Update is called once per frame
@@ -97,9 +79,6 @@ public class Player : MonoBehaviour
                 break;
             case (State.Walking):
                 //Can Jump, and regulate speed depending on inputs.
-                ManipulateHorizontalSpeed();
-
-                //Check jump or stop
                 if (verticalInput.IsPressed())
                 {
                     if (verticalInput.InputValue > 0f)
@@ -113,24 +92,17 @@ public class Player : MonoBehaviour
                         state = State.Stopping;
                     }
                 }
-                else if (fogInput.IsPressedDown)
-                {
-                    StartFogging();
-                }
+                ManipulateHorizontalSpeed();
                 break;
             case (State.Jumping):
                 //Can only regulate speed
                 ManipulateHorizontalSpeed();
 
-                //Check fogging
-                if (fogInput.IsPressedDown)
-                {
-                    StartFogging();
-                }
                 //Check if ground is touched
-                else if ( rb.velocity.y == 0f)
+                if ( rb.velocity.y == 0f)
                 {
-                    StartWalking();
+                    state = State.Walking;
+                    //form = Form.Vampire;
                 }
                 break;
             case (State.Stopping):
@@ -141,52 +113,20 @@ public class Player : MonoBehaviour
                     state = State.Walking;
                 }
                 break;
-            case (State.Phasing):
-                //turn back to vampire from fog
-                if (timeSpentInFog > minimalTimeInFog && !fogInput.IsPressed())
-                {
-                    //collider.enabled = true;
-                    //rb.gravityScale = gravityScale;
-                    StartWalking();
-
-                }
-                else
-                {
-                    timeSpentInFog += Time.deltaTime;
-                }
-                break;
         }
 
-        switch (state)
+        switch (form)
         {
-            case (State.Stun):
-                if (form != Form.Vampire)
-                {
-                    form = Form.Vampire;
-                }
-                break;
-            case (State.Walking):
-                if (form != Form.Vampire)
-                {
-                    form = Form.Vampire;
-                }
-                break;
-            case (State.Stopping):
-                if (form != Form.Vampire)
-                {
-                    form = Form.Vampire;
-                }
-                break;
-            case (State.Jumping):
-                if (form != Form.Wolf)
+            case (Form.Vampire):
+                if (rb.velocity.y > 0f)
                 {
                     form = Form.Wolf;
                 }
                 break;
-            case (State.Phasing):
-                if (form != Form.Fog)
+            case (Form.Wolf):
+                if (rb.velocity.y == 0f)
                 {
-                    form = Form.Fog;
+                    form = Form.Vampire;
                 }
                 break;
         }
@@ -196,48 +136,15 @@ public class Player : MonoBehaviour
     #region trigger
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (form != Form.Fog && collision.gameObject.tag.Equals("Obstacle"))
+        if (collision.gameObject.tag.Equals("Obstacle"))
         {
             //Debug.Log("obstacle touched!");
             Stun(2f);
             Destroy(collision.gameObject);
         }
     }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (form != Form.Fog && collision.gameObject.tag.Equals("Obstacle"))
-        {
-            Stun(2f);
-            Destroy(collision.gameObject);
-        }
-    }
     #endregion
 
-    #region start States
-    private void StartWalking()
-    {
-        form = Form.Vampire;
-        state = State.Walking;
-        
-        SetVelocity(data.BaseSpeed);
-    }
-    private void StartFogging()
-    {
-        //init
-        form = Form.Fog;
-        state = State.Phasing;
-        timeSpentInFog = 0f;
-        SetVerticalVelocity(0f);
-        //desactive collisions
-        //collider.enabled = false;
-        //rb.gravityScale = 0f;
-
-        //Go slow
-        SetVelocity(data.VerySlowSpeed);
-        
-    }
-    #endregion
 
     private void ManipulateHorizontalSpeed()
     {
@@ -293,13 +200,6 @@ public class Player : MonoBehaviour
         rb.velocity = velocity;
         lastKnownSpeed = speed;
     }
-
-    private void SetVerticalVelocity(float value)
-    {
-        Vector3 velocity = rb.velocity;
-        velocity.y = value;
-        rb.velocity = velocity;
-    }
     
     private void StopHorizontalMovement()
     {
@@ -331,7 +231,7 @@ public class Player : MonoBehaviour
     }
     public enum State
     {
-        Stun, Walking, Jumping, Stopping, Phasing
+        Stun, Walking, Jumping, Stopping
     }
     
 }
