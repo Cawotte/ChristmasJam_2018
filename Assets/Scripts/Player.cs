@@ -161,6 +161,7 @@ public class Player : MonoBehaviour
                 ManipulateVerticalSpeed();
                 if (fogInput.IsPressedDown)
                 {
+                    OnEndBat();
                     StartFogging();
                 }
                 break;
@@ -371,6 +372,7 @@ public class Player : MonoBehaviour
         if (state == State.Stun) yield break;
         float t = 0f;
         StopHorizontalMovement();
+        SetVerticalVelocity(0f);
         state = State.Stun;
         form = Form.Stun;
 

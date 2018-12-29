@@ -11,12 +11,23 @@ public class PlayerSprites : MonoBehaviour
 
     private Animator animator;
     private Player player;
+    private BoxCollider2D collider;
     private Player.Form lastKnownForm = Player.Form.Vampire;
 
+    [SerializeField] FormBounds[] formBounds;
+
+    [System.Serializable]
+    private struct FormBounds
+    {
+        public Player.Form Form;
+        public Vector2 Size;
+        public Vector2 Offset;
+    }
     private void Awake()
     {
         player = GetComponent<Player>();
         animator = GetComponent<Animator>();
+        collider = GetComponent<BoxCollider2D>();
     }
 
     // Start is called before the first frame update
@@ -45,24 +56,45 @@ public class PlayerSprites : MonoBehaviour
                 break;
             case (Player.Form.Bat):
                 animator.Play("Flying");
-                //SetSprite(batSprite);
                 break;
             case (Player.Form.Wolf):
                 animator.Play("Jump");
-                //SetSprite(wolfSprite);
                 break;
             case (Player.Form.Fog):
                 animator.Play("Fog");
-                //SetSprite(fogSprite);
                 break;
             case (Player.Form.Stun):
                 animator.Play("Stun");
                 break;
         }
+
+        UpdateColliderBox(form);
+    }
+
+    private void UpdateColliderBox(Player.Form form)
+    {
+        FormBounds fb = GetFormBounds(form);
+        
+        collider.offset = fb.Offset;
+        collider.size = fb.Size;
     }
 
     private void SetSprite(Sprite sprite)
     {
         GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+
+    private FormBounds GetFormBounds(Player.Form form)
+    {
+        for (int i = 0; i < formBounds.Length; i++)
+        {
+            if (formBounds[i].Form == form )
+            {
+                return formBounds[i];
+            }
+        }
+
+        Debug.Log("error! form not found" + form);
+        return formBounds[0];
     }
 }
