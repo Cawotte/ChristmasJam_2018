@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Form form = Form.Vampire;
     [SerializeField] private State state = State.Walking;
 
+    [SerializeField] private Vector3 veloc;
     private Rigidbody2D rb;
     private Collider2D collider;
 
@@ -89,6 +90,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        veloc = rb.velocity;
         //Resume velocity to speed if moving and blocked by obstacle.
         if ( CanMoveHorizontaly() && rb.velocity.x == 0f)
         {
@@ -107,17 +109,6 @@ public class Player : MonoBehaviour
                 if (jumpInput.IsPressedDown)
                 {
                     Jump();
-                    /*
-                    if (jumpInput.InputValue > 0f)
-                    {
-                        //form = Form.Wolf;
-                    } */
-                    /*
-                    else
-                    {
-                        StopHorizontalMovement();
-                        state = State.Stopping;
-                    } */
                 }
                 else if (fogInput.IsPressedDown)
                 {
@@ -136,6 +127,10 @@ public class Player : MonoBehaviour
                 if (fogInput.IsPressedDown)
                 {
                     StartFogging();
+                }
+                else if (verticalInput.IsPressedDown)
+                {
+                    StartFlying();
                 }
                 //Check if ground is touched
                 else if ( rb.velocity.y == 0f)
@@ -164,6 +159,10 @@ public class Player : MonoBehaviour
                 break;
             case (State.Flying):
                 ManipulateVerticalSpeed();
+                if (fogInput.IsPressedDown)
+                {
+                    StartFogging();
+                }
                 break;
         }
 
@@ -230,6 +229,11 @@ public class Player : MonoBehaviour
             StartWalking();
         }
     }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        OnCollisionEnter2D(collision);
+    }
     #endregion
 
     #region start States
@@ -263,6 +267,8 @@ public class Player : MonoBehaviour
 
         rb.gravityScale = 0f;
         SetVelocity(data.VeryFastSpeed);
+        gameObject.transform.position += Vector3.up * 0.1f;
+        //rb.AddForce(Vector3.up, ForceMode2D.Impulse);
     }
 
     private void OnEndBat()
@@ -298,7 +304,7 @@ public class Player : MonoBehaviour
     private void ManipulateVerticalSpeed()
     {
         //Up when pressed, down else.
-        if (verticalInput.IsPressed())
+        if (verticalInput.IsPressed() && verticalInput.InputValue > 0f)
         {
             SetVerticalVelocity(data.batVerticalSpeed);
         }

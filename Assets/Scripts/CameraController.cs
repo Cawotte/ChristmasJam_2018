@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    [SerializeField] private Vector3 offset;
     [SerializeField] private Player player;
+    
 
     private Camera mainCamera;
 
@@ -23,6 +25,6 @@ public class CameraController : MonoBehaviour
         Vector3 cameraPos = mainCamera.transform.position;
         cameraPos.x = player.transform.position.x;
         cameraPos.y = player.transform.position.y;
-        mainCamera.transform.position = cameraPos;
+        mainCamera.transform.position = cameraPos + offset;
     }
 }
