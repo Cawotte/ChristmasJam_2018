@@ -230,8 +230,9 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (form == Form.Bat)
+        if (form == Form.Bat && !collision.gameObject.tag.Equals("Ceiling"))
         {
+            //Debug.Log("No ceileing collision!");
             OnEndBat();
             StartWalking();
         }
