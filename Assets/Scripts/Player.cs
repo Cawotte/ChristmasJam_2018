@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     private AxisInput verticalInput;
     private AxisInput horizontalInput;
     private AxisInput fogInput;
+    private AxisInput batInput;
 
     //timer
     private float timeSpentInFog = 0f;
@@ -77,7 +78,8 @@ public class Player : MonoBehaviour
     {
         verticalInput = inputManager.Get("Vertical");
         horizontalInput = inputManager.Get("Horizontal");
-        fogInput = inputManager.Get("Jump");
+        batInput = inputManager.Get("Action1");
+        fogInput = inputManager.Get("Action2");
     }
 
     // Update is called once per frame
