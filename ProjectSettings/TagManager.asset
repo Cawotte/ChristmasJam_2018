@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Obstacle
   - Ceiling
+  - Victory
   layers:
   - Default
   - TransparentFX

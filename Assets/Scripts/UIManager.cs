@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
-    [SerializeField] private GameObject player;
     [SerializeField] private GameObject toHide;
+    [SerializeField] private GameObject VictoryScreen;
 
     [SerializeField] private Slider timeSlider;
 
@@ -27,6 +27,11 @@ public class UIManager : MonoBehaviour
     {
         gameManager.StartGame();
         toHide.SetActive(false);
+    }
+
+    public void ShowVictoryScreen()
+    {
+        VictoryScreen.SetActive(true);
     }
 
     public void Quit()

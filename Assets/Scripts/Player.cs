@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
 {
 
     [SerializeField] private InputManager inputManager;
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private Data data;
     [SerializeField] private float minimalTimeInFog = 1f;
 
@@ -219,6 +220,10 @@ public class Player : MonoBehaviour
                 Stun(data.NormalStunDuration);
             }
             Destroy(collision.gameObject);
+        }
+        else if (collision.gameObject.tag.Equals("Victory"))
+        {
+            gameManager.WinTheGame();
         }
     }
 

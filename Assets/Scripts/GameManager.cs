@@ -34,6 +34,12 @@ public class GameManager : MonoBehaviour
         uiManager.InitSlider(timer);
     }
 
+    public void WinTheGame()
+    {
+        uiManager.ShowVictoryScreen();
+        gameHasStarted = false;
+    }
+
 
     public void ResetGame()
     {
