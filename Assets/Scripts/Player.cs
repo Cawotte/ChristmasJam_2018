@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     //Inputs
     private AxisInput verticalInput;
     private AxisInput horizontalInput;
+    private AxisInput fogInput;
+    private AxisInput jumpInput;
 
     private float lastKnownSpeed;
 
@@ -29,11 +31,15 @@ public class Player : MonoBehaviour
     private struct Data
     {
         public float JumpHeight;
+        public float batVerticalSpeed;
         public float BaseSpeed;
         public float VerySlowMultiplier;
         public float SlowMultiplier;
         public float FastMultiplier;
         public float VeryFastMultiplier;
+
+        public float NormalStunDuration;
+        public float LongStunDuration;
         
         public float VerySlowSpeed
         {
@@ -64,6 +70,14 @@ public class Player : MonoBehaviour
         SetVelocity(data.BaseSpeed);
     }
 
+    private void Start()
+    {
+        verticalInput = inputManager.Get("Vertical");
+        horizontalInput = inputManager.Get("Horizontal");
+        jumpInput = inputManager.Get("Action1");  //a - space
+        fogInput = inputManager.Get("Action2"); //z
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -79,20 +93,32 @@ public class Player : MonoBehaviour
                 break;
             case (State.Walking):
                 //Can Jump, and regulate speed depending on inputs.
-                if (verticalInput.IsPressed())
+                ManipulateHorizontalSpeed();
+
+                //Check jump or stop
+                if (jumpInput.IsPressedDown)
                 {
-                    if (verticalInput.InputValue > 0f)
+                    Jump();
+                    /*
+                    if (jumpInput.InputValue > 0f)
                     {
-                        Jump();
                         //form = Form.Wolf;
-                    }
+                    } */
+                    /*
                     else
                     {
                         StopHorizontalMovement();
                         state = State.Stopping;
-                    }
+                    } */
                 }
-                ManipulateHorizontalSpeed();
+                else if (fogInput.IsPressedDown)
+                {
+                    StartFogging();
+                }
+                else if (verticalInput.IsPressedDown)
+                {
+                    StartFlying();
+                }
                 break;
             case (State.Jumping):
                 //Can only regulate speed
@@ -113,38 +139,107 @@ public class Player : MonoBehaviour
                     state = State.Walking;
                 }
                 break;
+            case (State.Phasing):
+                //turn back to vampire from fog
+                if (timeSpentInFog > minimalTimeInFog && !fogInput.IsPressed())
+                {
+                    StartWalking();
+                }
+                else
+                {
+                    timeSpentInFog += Time.deltaTime;
+                }
+                break;
+            case (State.Flying):
+                ManipulateVerticalSpeed();
+                break;
         }
 
         switch (form)
         {
-            case (Form.Vampire):
-                if (rb.velocity.y > 0f)
-                {
-                    form = Form.Wolf;
-                }
-                break;
-            case (Form.Wolf):
-                if (rb.velocity.y == 0f)
+            case (State.Stun):
+            case (State.Walking):
+            case (State.Stopping):
+                if (form != Form.Vampire)
                 {
                     form = Form.Vampire;
                 }
                 break;
+            case (State.Jumping):
+                if (form != Form.Wolf)
+                {
+                    form = Form.Wolf;
+                }
+                break;
+            case (State.Phasing):
+                if (form != Form.Fog)
+                {
+                    form = Form.Fog;
+                }
+                break;
+            case (State.Flying):
+                if (form != Form.Bat)
+                {
+                    form = Form.Bat;
+                }
+                break;
         }
 
     }
 
-    #region trigger
+    #region trigger and collsion
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag.Equals("Obstacle"))
         {
-            //Debug.Log("obstacle touched!");
-            Stun(2f);
+            if (form == Form.Bat)
+            {
+                Stun(data.LongStunDuration);
+            }
+            else
+            {
+                Stun(data.NormalStunDuration);
+            }
             Destroy(collision.gameObject);
+        }
+    }
+
+    //useful when popping out of fog inside obstacle
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        OnTriggerEnter2D(collision);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (form == Form.Bat)
+        {
+            OnEndBat();
+            StartWalking();
         }
     }
     #endregion
 
+
+        //Go slow
+        SetVelocity(data.VerySlowSpeed);
+        
+    }
+
+    private void StartFlying()
+    {
+        form = Form.Bat;
+        state = State.Flying;
+
+        rb.gravityScale = 0f;
+        SetVelocity(data.VeryFastSpeed);
+    }
+
+    private void OnEndBat()
+    {
+        rb.gravityScale = gravityScale;
+    }
+    #endregion 
 
     private void ManipulateHorizontalSpeed()
     {
@@ -169,6 +264,20 @@ public class Player : MonoBehaviour
             SetVelocity(data.BaseSpeed);
         }
     }
+
+    private void ManipulateVerticalSpeed()
+    {
+        //Up when pressed, down else.
+        if (verticalInput.IsPressed())
+        {
+            SetVerticalVelocity(data.batVerticalSpeed);
+        }
+        else
+        {
+            SetVerticalVelocity(-data.batVerticalSpeed);
+        }
+    }
+
     private void Jump()
     {
         Vector3 velocity = rb.velocity;
@@ -231,7 +340,7 @@ public class Player : MonoBehaviour
     }
     public enum State
     {
-        Stun, Walking, Jumping, Stopping
+        Stun, Walking, Jumping, Stopping, Phasing, Flying
     }
     
 }
